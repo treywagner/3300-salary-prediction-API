@@ -21,43 +21,29 @@ def home():
 
 @app.route("/predict", methods=["POST"])
 def predict():
+    """
+    Predict salary based on input JSON payload
+    Expected keys: age, gender, country, highest_deg, coding_exp, title, company_size
+    """
     print("inside predict")
-
     try:
-        data = request.get_json()
-        print("data from user:", data)
+        print(f"Request headers: {request.headers}")
+        print(f"Request data: {request.data}")
 
-        if data is None:
-            return jsonify({"error": "No JSON received or parsing failed"}), 400
+        data = request.get_json()
+        print(f"Parsed JSON: {data}")
 
         required_fields = [
-            "age", "gender", "country", "highest_deg",
-            "coding_exp", "title", "company_size"
+            "age",
+            "gender",
+            "country",
+            "highest_deg",
+            "coding_exp",
+            "title",
+            "company_size",
         ]
-
         if not all(field in data for field in required_fields):
             return jsonify({"error": "Missing one or more required fields"}), 400
-
-        features = [
-            int(data["age"]),
-            int(data["gender"]),
-            int(data["country"]),
-            int(data["highest_deg"]),
-            int(data["coding_exp"]),
-            int(data["title"]),
-            int(data["company_size"]),
-        ]
-
-        print("features before prediction:", features)
-        prediction = model.predict([features])[0]
-        print("prediction:", prediction)
-
-        return jsonify({"predicted_salary": prediction})
-
-    except Exception as e:
-        print("Exception occurred:", e)
-        return jsonify({"error": str(e)}), 500
-
 
         # Ensure correct order and type
         features = [
